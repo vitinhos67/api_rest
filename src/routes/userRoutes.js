@@ -1,11 +1,12 @@
 import express from 'express';
 import userController from '../controller/userController';
+import { verifiquedToken } from '../middleware/loginRequired';
 
 const router = express.Router();
 
 router.post('/', userController.store);
 router.get('/', userController.index);
-router.get('/:id', userController.show);
+router.get('/:id', verifiquedToken, userController.show);
 router.delete('/:id', userController.delete);
 router.put('/:id', userController.update);
 
