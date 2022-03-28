@@ -26,44 +26,35 @@ class UserController {
 
   // eslint-disable-next-line consistent-return
   async show(req, res) {
+    const { authorization } = req.headers;
+
+    if (!authorization) {
+      return res.status(401).json({
+        errors: ['Não e possivel acessar esta pagina'],
+      });
+    }
+
     try {
-      const user = {
+      const userHeader = {
         id: req.userID,
         email: req.userEmail,
       };
-      // const user = await User.findByPk(id);
+      const user = await User.findByPk(userHeader.id);
 
       if (!user) {
         return res.send('Usuario não encontrado, tente colocar um usuario valido');
       }
 
-      return res.json(user);
+      const { email, id, nome } = user;
+
+      return res.json({
+        id,
+        nome,
+        email,
+      });
     } catch (e) {
       console.log(e);
     }
-  }
-
-  // eslint-disable-next-line consistent-return
-  async showUniqueID(req, res) {
-    const { userId } = req.params;
-
-    if (!userId) {
-      return res.status(401).json({
-        errors: ['Valor invalido, tente inserir um valor valido'],
-      });
-    }
-
-    const user = await User.findOne({ where: { id: userId } });
-
-    if (!user) {
-      return res.status(401).json({
-        errors: ['Usuario não encontrado'],
-      });
-    }
-
-    return res.json({
-      user,
-    });
   }
 
   // eslint-disable-next-line consistent-return
@@ -75,14 +66,14 @@ class UserController {
         id: req.userID,
         email: req.userEmail,
       };
-
-      const user = await User.findByPk(userHeader.id);
-
       if (!userHeader) {
         return res.status(401).json({
           errors: ['Ocorreu um error ao encontrar o usuario, tente mais tarde'],
         });
       }
+
+      const user = await User.findByPk(userHeader.id);
+
       if (!user) {
         return res.status(401).json({
           errors: ['Ocorreu um error ao encontrar o usuario, tente mais tarde'],
@@ -102,11 +93,16 @@ class UserController {
   async update(req, res) {
     try {
       const user = await User.findByPk(req.userID);
-      if (!user) return res.send({ errors: ['Usuario não encontrado'] });
+      if (!user) {
+        return res.status(401).json({ errors: ['Usuario não encontrado'] });
+      }
 
-      await user.update(req.body);
+      const newUser = await user.update(req.body);
 
-      return res.send('Os dados foram atualizados');
+      return res.json({
+        user,
+        newUser,
+      });
     } catch (e) {
       return res.status(400).json(
         { error: e.errors.map((err) => err.message) },

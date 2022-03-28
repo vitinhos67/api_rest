@@ -5,11 +5,10 @@ import { verifiquedToken } from '../middleware/loginRequired';
 const router = express.Router();
 
 router.post('/', userController.store);
-router.get('/', userController.index);
 router.get('/', verifiquedToken, userController.show);
-// router.get('/:userId', userController.showUniqueID);
+
 router.delete('/', verifiquedToken, userController.delete);
-router.put('/', verifiquedToken, userController.update);
+router.patch('/', verifiquedToken, userController.update);
 
 export default router;
 
