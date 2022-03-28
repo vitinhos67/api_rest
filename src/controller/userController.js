@@ -27,9 +27,11 @@ class UserController {
   // eslint-disable-next-line consistent-return
   async show(req, res) {
     try {
-      const { id } = req.params;
-
-      const user = await User.findByPk(id);
+      const user = {
+        id: req.userID,
+        email: req.userEmail,
+      };
+      // const user = await User.findByPk(id);
 
       if (!user) {
         return res.send('Usuario não encontrado, tente colocar um usuario valido');
@@ -42,16 +44,56 @@ class UserController {
   }
 
   // eslint-disable-next-line consistent-return
+  async showUniqueID(req, res) {
+    const { userId } = req.params;
+
+    if (!userId) {
+      return res.status(401).json({
+        errors: ['Valor invalido, tente inserir um valor valido'],
+      });
+    }
+
+    const user = await User.findOne({ where: { id: userId } });
+
+    if (!user) {
+      return res.status(401).json({
+        errors: ['Usuario não encontrado'],
+      });
+    }
+
+    return res.json({
+      user,
+    });
+  }
+
+  // eslint-disable-next-line consistent-return
   async delete(req, res) {
     try {
-      const { id } = req.params;
+      /* O VALOR DESSA VARIAVEL VEM DO MIDDLEWARE DEFAULT,
+      FAZENDO PARTE DE UMA VARIAVEL REQ */
+      const userHeader = {
+        id: req.userID,
+        email: req.userEmail,
+      };
 
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(userHeader.id);
 
-      if (!user) {
-        return res.send('Usuario não encontrado, tente colocar um usuario valido');
+      if (!userHeader) {
+        console.log('Parei no header');
+        return res.status(401).json({
+          errors: ['Ocorreu um error ao encontrar o usuario, tente mais tarde'],
+        });
       }
-      res.redirect('/users');
+      if (!user) {
+        console.log('Parei no user');
+        return res.status(401).json({
+          errors: ['Ocorreu um error ao encontrar o usuario, tente mais tarde'],
+        });
+      }
+
+      res.json({
+        success: ['Usuario deletado com sucesso.'],
+      });
       user.destroy();
     } catch (e) {
       console.log(e);
@@ -61,10 +103,7 @@ class UserController {
   // eslint-disable-next-line consistent-return
   async update(req, res) {
     try {
-      const param = req.params.id;
-      if (!param) return res.status(200).json({ errors: ['Sem parametro'] });
-
-      const user = await User.findByPk(param);
+      const user = await User.findByPk(req.userID);
       if (!user) return res.send({ errors: ['Usuario não encontrado'] });
 
       await user.update(req.body);
@@ -77,5 +116,4 @@ class UserController {
     }
   }
 }
-
 export default new UserController();
