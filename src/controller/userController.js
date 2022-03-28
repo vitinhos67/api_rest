@@ -79,13 +79,11 @@ class UserController {
       const user = await User.findByPk(userHeader.id);
 
       if (!userHeader) {
-        console.log('Parei no header');
         return res.status(401).json({
           errors: ['Ocorreu um error ao encontrar o usuario, tente mais tarde'],
         });
       }
       if (!user) {
-        console.log('Parei no user');
         return res.status(401).json({
           errors: ['Ocorreu um error ao encontrar o usuario, tente mais tarde'],
         });
