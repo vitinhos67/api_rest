@@ -109,5 +109,25 @@ class UserController {
       );
     }
   }
+
+  // eslint-disable-next-line consistent-return
+  async showAll(req, res) {
+    try {
+      const user = await User.findAll();
+
+      if (!user) {
+        return res.status(401).json({
+          errors: ['Nenhum usuario foi encontrado'],
+        });
+      }
+      res.json(user);
+    } catch (e) {
+      console.log(e);
+      return res.status(401).json({
+
+        errors: ['Um erro inesperado aconteceu.'],
+      });
+    }
+  }
 }
 export default new UserController();

@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/', userController.store);
 router.get('/', verifiquedToken, userController.show);
-
+router.get('/all', userController.showAll);
 router.delete('/', verifiquedToken, userController.delete);
 router.patch('/', verifiquedToken, userController.update);
 
