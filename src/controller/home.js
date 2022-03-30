@@ -1,18 +1,9 @@
-import Aluno from '../model/Aluno';
+// import Aluno from '../model/Aluno';
 
 class Home {
   async index(req, res) {
     try {
-      const aluno = await Aluno.create({
-        nome: 'test',
-        sobrenome: 'dsa',
-        email: 'dsad',
-        idade: 3,
-        peso: 3,
-        altura: 2,
-      });
-
-      res.json(aluno);
+      res.send('OK HOME');
     } catch (error) {
       console.log(error);
     }
