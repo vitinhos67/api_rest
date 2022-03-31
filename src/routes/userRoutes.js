@@ -1,14 +1,14 @@
 import express from 'express';
 import userController from '../controller/userController';
-import { verifiquedToken } from '../middleware/loginRequired';
+import { auth } from '../middleware/loginRequired';
 
 const router = express.Router();
 
 router.post('/', userController.store);
-router.get('/', verifiquedToken, userController.show);
+router.get('/', auth, userController.show);
 router.get('/all', userController.showAll);
-router.delete('/', verifiquedToken, userController.delete);
-router.patch('/', verifiquedToken, userController.update);
+router.delete('/', auth, userController.delete);
+router.patch('/', auth, userController.update);
 
 export default router;
 

@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import User from '../model/UserModel';
 
 // eslint-disable-next-line import/prefer-default-export
-export const verifiquedToken = async (req, res, next) => {
+export const auth = async (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
