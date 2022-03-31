@@ -1,13 +1,21 @@
-// import Aluno from '../model/Aluno';
+import multer from 'multer';
+import configMulter from '../config/multer';
 
-class Home {
+const upload = multer(configMulter).single('foto');
+
+class Photo {
   async store(req, res) {
-    try {
-      res.send('OK HOME');
-    } catch (error) {
-      console.log(error);
-    }
+    // eslint-disable-next-line consistent-return
+    return upload(req, res, (error) => {
+      if (error) {
+        return res.status(401).json({
+          errors: [error],
+        });
+      }
+
+      return res.send(req.file);
+    });
   }
 }
 
-export default new Home();
+export default new Photo();
