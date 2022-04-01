@@ -9,11 +9,11 @@ export const auth = async (req, res, next) => {
     res.status(401).json({
       errors: ['Não autorizado'],
     });
+    return;
   }
 
-  const [, token] = authorization.split(' ');
-
   try {
+    const [, token] = authorization.split(' ');
     const dados = jwt.verify(token, process.env.TOKEN_SECRET);
     const { id, email } = dados;
 
@@ -25,9 +25,11 @@ export const auth = async (req, res, next) => {
     });
 
     if (!user) {
-      res.status(401).json({
+      const newLocal = res.status(401).json({
         errors: ['Usuario não encontrado'],
       });
+      // eslint-disable-next-line consistent-return
+      return newLocal;
     }
 
     req.userID = id;
