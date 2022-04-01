@@ -1,5 +1,6 @@
 /* eslint-disable no-inner-declarations */
 import Aluno from '../model/Aluno';
+import Photo from '../model/photo';
 
 class Alunos {
   // eslint-disable-next-line consistent-return
@@ -63,33 +64,7 @@ class Alunos {
         });
       }
 
-      function checkEqualFields(obj) {
-        let verifiqued = false;
-
-        const {
-          nome,
-          sobrenome,
-          email,
-          idade,
-          altura,
-          peso,
-        } = req.body;
-
-        if (nome === obj.nome) verifiqued = true;
-        if (sobrenome === obj.sobrenome) verifiqued = true;
-        if (email === obj.email) verifiqued = true;
-        if (idade === obj.idade) verifiqued = true;
-        if (altura === obj.altura) verifiqued = true;
-        if (peso === obj.peso) verifiqued = true;
-
-        return verifiqued;
-      }
-
-      if (checkEqualFields(aluno)) {
-        return res.json('Modifique os valores');
-      }
-
-      const newUser = await aluno.update(req.body);
+      const newUser = await Aluno.update(req.body);
 
       res.json(newUser);
     } catch (e) {
@@ -103,8 +78,15 @@ class Alunos {
   // eslint-disable-next-line consistent-return
   async index(req, res) {
     try {
-      const alunos = await Aluno.findAll();
-      res.send(alunos);
+      const aluno = await Aluno.findAll({
+        attributes: ['id', 'nome', 'sobrenome', 'email', 'idade', 'peso', 'altura'],
+        order: [['id', 'DESC'], [Photo, 'id', 'DESC']],
+        include: {
+          model: Photo,
+          attributes: ['filename'],
+        },
+      });
+      res.send(aluno);
     } catch (e) {
       return res.status(401).json({
         e,
@@ -119,7 +101,14 @@ class Alunos {
       if (!id) {
         return res.status(401).json({ error: ['Precisa passar um ID na query'] });
       }
-      const aluno = await Aluno.findByPk(id);
+      const aluno = await Aluno.findByPk(id, {
+        attributes: ['id', 'nome', 'sobrenome', 'email', 'idade', 'peso', 'altura'],
+        order: [['id', 'DESC'], [Photo, 'id', 'DESC']],
+        include: {
+          model: Photo,
+          attributes: ['filename'],
+        },
+      });
 
       if (!aluno) {
         return res.status(401).json({
