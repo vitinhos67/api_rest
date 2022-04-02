@@ -83,7 +83,7 @@ class Alunos {
         order: [['id', 'DESC'], [Photo, 'id', 'DESC']],
         include: {
           model: Photo,
-          attributes: ['filename'],
+          attributes: ['url', 'filename'],
         },
       });
       res.send(aluno);
@@ -106,7 +106,7 @@ class Alunos {
         order: [['id', 'DESC'], [Photo, 'id', 'DESC']],
         include: {
           model: Photo,
-          attributes: ['filename'],
+          attributes: ['url', 'filename'],
         },
       });
 
