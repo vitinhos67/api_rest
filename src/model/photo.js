@@ -1,4 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
+import config from '../config/appConfig';
 
 export default class Photo extends Model {
   static init(sequelize) {
@@ -21,6 +22,13 @@ export default class Photo extends Model {
             msg: ['Nome precisa ter ao menos 3 caracteres'],
           },
 
+        },
+      },
+
+      url: {
+        type: Sequelize.VIRTUAL,
+        get() {
+          return `${config.url}${this.getDataValue('filename')}`;
         },
       },
 

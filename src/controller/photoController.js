@@ -23,7 +23,7 @@ class Photo {
         return res.json(photo);
       } catch (e) {
         return res.status(401).json({
-          errors: ['Aluno nao existe'],
+          errors: ['Aluno nao existe', e],
         });
       }
     });
